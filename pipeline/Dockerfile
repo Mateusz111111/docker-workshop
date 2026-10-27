@@ -1,0 +1,18 @@
+FROM python:3.14.2-slim
+
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+WORKDIR /code
+ENV PATH="/code/.venv/bin:$PATH"
+
+COPY pyproject.toml .python-version uv.lock ./
+RUN uv sync --locked --no-install-project
+
+COPY . .
+
+RUN uv sync --locked
+
+
+# COPY pipeline.py .
+
+ENTRYPOINT ["python", "pipeline.py"]
